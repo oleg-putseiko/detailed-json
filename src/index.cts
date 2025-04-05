@@ -12,7 +12,7 @@ const isObject = (
   typeof value === 'object' && value !== null;
 
 class _Json {
-  static parse(text: string, reviver?: Reviver): string {
+  static parse(text: string, reviver?: Reviver): unknown {
     return JSON.parse(text, reviver);
   }
 
