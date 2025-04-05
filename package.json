@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "license": "MIT",
   "author": "Oleg Putseiko <oleg.putseiko@gmail.com> (https://github.com/oleg-putseiko)",
-  "keywords": [],
+  "keywords": [
+    "json",
+    "error",
+    "stringify",
+    "parse",
+    "circular"
+  ],
   "homepage": "https://github.com/oleg-putseiko/detailed-json",
   "repository": {
     "type": "git",
@@ -12,6 +18,11 @@
   "bugs": {
     "url": "https://github.com/oleg-putseiko/detailed-json/issues"
   },
+  "main": "dist/index.cjs",
+  "files": [
+    "dist/**/*"
+  ],
+  "exports": "./dist/index.cjs",
   "scripts": {
     "build": "yarn build:swc && yarn build:tsc",
     "build:swc": "swc src -d dist --strip-leading-paths --out-file-extension cjs",
