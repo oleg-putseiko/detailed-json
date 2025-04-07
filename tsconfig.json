@@ -12,9 +12,9 @@
     "rootDir": "src",
     "strict": true,
     "stripInternal": true,
-    "target": "ES6",
+    "target": "ES2020",
     "allowImportingTsExtensions": true
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*.cts", "src/**/*.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.cts", "src/**/*.d.ts"]
 }
