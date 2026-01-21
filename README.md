@@ -67,9 +67,6 @@ const object = {
   date: new Date(),
   error: new Error('Some error'),
   function: function func() {},
-  object: {
-    error: new Error('Nested error'),
-  },
 };
 
 object.circularRef = object;
@@ -77,39 +74,41 @@ object.circularRef = object;
 console.log(Json.stringify(object));
 
 /*
- * Output:
+ * ❌ Built-in JSON | Output:
  * {
  *     "string": "foo bar",
  *     "number": 123,
- *     "bigint": "123n",
+ *     "bigint": "123n", // ❌ TypeError: Do not know how to serialize a BigInt
  *     "infinity": null,
  *     "boolean": true,
  *     "null": null,
- *     "map": {
- *         "key": "value"
- *     },
- *     "set": [
- *         1,
- *         2,
- *         3
- *     ],
- *     "array": [
- *         1,
- *         2,
- *         3
- *     ],
+ *     "map": {}, // ⚠️ Data loss has occurred
+ *     "set": {}, // ⚠️ Data loss has occurred
+ *     "array": [1, 2, 3],
+ *     "date": "2025-04-06T15:59:01.374Z",
+ *     "error": {}, // ⚠️ Data loss has occurred
+ *     "circularRef": "[Circular]" // ❌ TypeError: Converting circular structure to JSON
+ * }
+ */
+
+/*
+ * ✅ Detailed JSON | Output:
+ * {
+ *     "string": "foo bar",
+ *     "number": 123,
+ *     "bigint": "123n", // ✅ BigInt is serialized
+ *     "infinity": null,
+ *     "boolean": true,
+ *     "null": null,
+ *     "map": { "key": "value" }, // ✅ No data loss
+ *     "set": [1, 2, 3], // ✅ No data loss
+ *     "array": [1, 2, 3],
  *     "date": "2025-04-06T15:59:01.374Z",
  *     "error": {
  *         "stack": "Error: Some error …",
  *         "message": "Some error"
- *     },
- *     "object": {
- *         "error": {
- *             "stack": "Error: Nested error …",
- *             "message": "Nested error"
- *         }
- *     },
- *     "circularRef": "[Circular]"
+ *     }, // ✅ No data loss
+ *     "circularRef": "[Circular]" // ✅ Circular reference detected
  * }
  */
 ```
@@ -130,7 +129,7 @@ Converts a JavaScript Object Notation (JSON) string into an object.
 ```js
 import { Json } from 'detailed-json';
 
-const text = [
+const stringified = [
   '{',
   '    "string": "foo bar",',
   '    "number": 123,',
@@ -138,48 +137,51 @@ const text = [
   '    "infinity": null,',
   '    "boolean": true,',
   '    "null": null,',
-  '    "array": [',
-  '        1,',
-  '        2,',
-  '        3',
-  '    ],',
+  '    "array": [1, 2, 3]',
   '    "date": "2025-04-06T15:59:01.374Z",',
   '    "error": {',
   '        "stack": "Error: Some error …",',
   '        "message": "Some error"',
   '    },',
-  '    "object": {',
-  '        "error": {',
-  '            "stack": "Error: Nested error …",',
-  '            "message": "Nested error"',
-  '        }',
-  '    },',
   '    "circularRef": "[Circular]"',
   '}',
 ].join('');
 
-console.log(Json.parse(text));
+console.log(Json.parse(stringified));
 
 /*
- * Output:
+ * ❌ Built-in JSON | Output:
  * {
  *     string: 'foo bar',
  *     number: 123,
- *     bigint: 123n,
+ *     bigint: '123n', // ⚠️ BigInt is not parsed
  *     infinity: null,
  *     boolean: true,
  *     null: null,
- *     array: [ 1, 2, 3 ],
- *     date: '2025-04-06T15:59:01.374Z', // Date object
+ *     array: [1, 2, 3],
+ *     date: '2025-04-06T15:59:01.374Z',
  *     error: {
  *        stack: 'Error: Some error …',
  *        message: 'Some error'
  *     },
- *     object: {
- *         error: {
- *             stack: 'Error: Nested error …',
- *             message: 'Nested error'
- *         }
+ *     circularRef: '[Circular]'
+ * }
+ */
+
+/*
+ * ✅ Detailed JSON | Output:
+ * {
+ *     string: 'foo bar',
+ *     number: 123,
+ *     bigint: 123n, // ✅ BigInt is parsed
+ *     infinity: null,
+ *     boolean: true,
+ *     null: null,
+ *     array: [1, 2, 3],
+ *     date: '2025-04-06T15:59:01.374Z',
+ *     error: {
+ *        stack: 'Error: Some error …',
+ *        message: 'Some error'
  *     },
  *     circularRef: '[Circular]'
  * }

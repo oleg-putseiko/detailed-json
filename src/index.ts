@@ -82,10 +82,7 @@ const _toJSON = <T>(value: T): T => {
 };
 
 const _parse: ParseFunction = (text, reviver) => {
-  return JSON.parse(
-    text,
-    reviver ? (key, value) => _revive(key, value, reviver) : _revive,
-  );
+  return JSON.parse(text, (key, value) => _revive(key, value, reviver));
 };
 
 const _stringify: StringifyFunction = (value, replacer, space = 4) => {
